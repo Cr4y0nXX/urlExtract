@@ -7,37 +7,28 @@
 import re
 import os
 import time
-# from datetime import datetime
+from tqdm import tqdm
 from argparse import ArgumentParser
-from multiprocessing import Pool, Manager
+from multiprocessing import Pool, Manager, cpu_count
 
 class URLExtract():
-    def __init__(self, file):
-        # self.args = self.parseArgs()
-        self.differentURLList = []
-        self.fileList = Manager().list()
-        self.allURLList = Manager().list()
-        self.urlWithFileList = Manager().list()
-        self.s = r"http://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]|"
-        self.s += r"ftp://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]|"
-        self.s += r"https://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]"
-        self.file = file
-        print("Please waiting……")
+    def __init__(self):
+        self.args = self.parseArgs()
+        self.differentURLList = []  # 所有URL去重后的列表
+        self.fileList = Manager().list()    # 扫描到的所有文件
+        self.allURLList = Manager().list()  # 扫描到的所有url
+        self.urlWithFileList = Manager().list() # 所有url及其所在文件
         self.multiRun()
 
     def parseArgs(self):
-        """
-        文件、进程数、包含关键字、不包含关键字、输出结果到文件、
-        :return:
-        """
-        parser = ArgumentParser()
+        # 文件、进程数、关键字
+        parser = ArgumentParser(description="This is an url extract tool based on the  python3.7, created by Cr4y0n.")
         parser.add_argument("-f", "--file", required=True, help="Target file or package")
-        parser.add_argument("-p", "--process", required=False, type=int, default=4, help="Number of processes, default 4, -1 means the most ")
-        parser.add_argument("-k", "--keyword", required=False, type=str, default="", help="include keyword('key1&&key2' is include both key1 and key2, 'key1||key2' is include key1 or key2)")
-        parser.add_argument("-ek", "--process", required=False, type=int, default=4, help="Number of processes, default 4, -1 means the most ")
-        parser.add_argument("-rA", "--randomAgent", required=False, action="store_true", help="random request User-Agent")
+        parser.add_argument("-p", "--process", required=False, type=int, default=cpu_count(), help=f"Number of processes, default is the most of your CP: {cpu_count()}")
+        parser.add_argument("-k", "--keyword", required=False, action="append", help="Include the keyword(Separate with ',': A,B,C,...)")
         return parser.parse_args()
 
+    # 加载指定路径下的所有文件
     def loadFile(self, path):
         if os.path.isfile(path):
             self.fileList.append(path)
@@ -47,6 +38,7 @@ class URLExtract():
                     fileAbsPath = os.path.join(root, name)
                     self.fileList.append(fileAbsPath)
 
+    # 匹配单个文件中的url，存入共享列表中
     def findURL(self, file):
         string = ""
         with open(file, encoding="utf8") as f:
@@ -59,39 +51,41 @@ class URLExtract():
         if len(oneFileResult) != 0:
             oneFileResult.insert(0, "------" + file + "------")
             self.urlWithFileList.append(oneFileResult)
-        # print(self.urlWithFileList)
 
+    # 多进程对所有文件进行url扫描
     def multiRun(self):
+        self.s = r"http://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]|"
+        self.s += r"ftp://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]|"
+        self.s += r"https://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]"
+        print("Please waiting……")
         start = time.time()
-        self.loadFile(self.file)
-        # print(self.fileList)
-        pool = Pool()
-        for file in self.fileList:
+        self.loadFile(self.args.file)
+        pool = Pool(self.args.process)
+        for file in tqdm(self.fileList):
             pool.apply_async(self.findURL, (file, ))
         pool.close()
         pool.join()
         end = time.time()
         self.timeSpent = "%.2f"%(end - start)
         self.output()
-        self.writeFile()
 
     def output(self):
-
-        # for i in self.differentURLList:
-        #     print(i)
-        print("-" * 20)
-        print(f"find url:   {len(self.allURLList)}")
+        print("\n" + "-" * 20)
         print(f"scan file:  {len(self.fileList)}")
-        print(f"time spend: {self.timeSpent} s")
-        print("-" * 20, "\nThe result has been saved in ./output/")
+        print(f"find url:   {len(self.allURLList)}")
+        print(f"spend time: {self.timeSpent} s")
+        if len(self.allURLList) > 0:
+            self.writeFile()
+            print("-" * 20, f"\n\nThe result has been saved in ./output/{self.date}/")
+        else:
+            print("-" * 20, f"\n\nFind 0 url, Thank you for using.")
 
     def writeFile(self):
-        # porjectName = self.args.filename
-        date = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
-        if not os.path.exists(r"./output/" + date):
-            os.mkdir(r"./output/" + date)
+        self.date = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
+        if not os.path.exists(r"./output/" + self.date):
+            os.mkdir(r"./output/" + self.date)
         # 带文件名统计
-        outputWithFilename = r"./output/" + date + "/urlWithFilename.txt"
+        outputWithFilename = r"./output/" + self.date + "/urlWithFilename.txt"
         with open(outputWithFilename, "w") as f:
             for i in self.urlWithFileList:
                 for j in i:
@@ -99,16 +93,27 @@ class URLExtract():
         # 仅统计url
         allURLList = list(set(self.allURLList))
         self.differentURLList = sorted(allURLList)    # 去重+排序
-        outputOnlyURL = r"./output/" + date + "/url.txt"
+        outputOnlyURL = r"./output/" + self.date + "/url.txt"
         with open(outputOnlyURL, "w") as f:
             for i in self.differentURLList:
                 f.write(i + "\n")
         # 记录项目名
-        outputPorjectName = r"./output/" + date + "/porjectName.txt"
+        outputPorjectName = r"./output/" + self.date + "/porjectName.txt"
         with open(outputPorjectName, "w") as f:
-            f.write(self.file + "\n")
+            f.write(self.args.file + "\n")
+        # 带有关键字
+        if self.args.keyword:
+            self.withKeyword()
+
+    def withKeyword(self):
+        url_keyword = r"./output/" + self.date + "/urlWithKeyword.txt"
+        with open(url_keyword, "w") as f:
+            f.write(f"keyword: {self.args.keyword}\n\n")
+            for url in self.differentURLList:
+                for key in self.args.keyword:
+                    if key in url:
+                        f.write(url + "\n")
+                        break
 
 if __name__ == "__main__":
-    file = r"E:/"
-    # file = r"./1.html"
-    URLExtract(file)
+    URLExtract()
