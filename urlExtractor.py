@@ -11,7 +11,7 @@ from tqdm import tqdm
 from argparse import ArgumentParser
 from multiprocessing import Pool, Manager, cpu_count
 
-class URLExtract():
+class URLExtractor():
     def __init__(self):
         self.args = self.parseArgs()
         self.differentURLList = []  # 所有URL去重后的列表
@@ -116,4 +116,4 @@ class URLExtract():
                         break
 
 if __name__ == "__main__":
-    URLExtract()
+    URLExtractor()
