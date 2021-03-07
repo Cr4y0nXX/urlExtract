@@ -1,6 +1,5 @@
 ## urlExtractor
 
-------
 
 URL提取器，使用多进程的方式对目标路径下所有文件进行所描，由于Python的多线程存在资源问题，所以使用了多进程的方式，最大限度利用CPU资源，分析几千个文件只需要5秒左右
 
@@ -10,7 +9,6 @@ URL提取器，使用多进程的方式对目标路径下所有文件进行所�
 
 ## Install
 
-------
 
 使用git下载
 
@@ -20,7 +18,6 @@ git clone https://github.com/Cr4y0nXX/urlExtractor.git
 
 ## Usage
 
-------
 
 ```
 python urlExtractor.py -f D:\phpstudy
