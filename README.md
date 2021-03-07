@@ -16,16 +16,16 @@ git clone https://github.com/Cr4y0nXX/urlExtractor.git
 
 ## Usage
 
-使用`-f`或`--file`指定需要分析的项目路径，即可进行分析，并输出结果到`./output/datetime`
+使用必需参数`-f`或`--file`指定需要分析的项目路径，即可进行分析，并输出结果到`./output/datetime`
 
 ```
 python urlExtractor.py -f D:\phpstudy
 ```
 
-除此还有两个参数：
+除此还有两个可选参数：
 
 - -p  --process ：进程数，默认是本机的做大逻辑处理器数量
-- -k  --keyword ：关键字，可指定关键字来提取包含该关键字的URL，可使用逗号隔开多个
+- -k  --keyword ：关键字，可指定并提取包含该关键字的URL，使用逗号隔开多个
 
 ```
 λ python urlExtractor.py -h
