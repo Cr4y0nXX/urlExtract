@@ -2,15 +2,25 @@
 
 ------
 
-### 介绍
-
 URL提取器，使用多进程的方式对目标路径下所有文件进行所描，由于Python的多线程存在资源问题，所以使用了多进程的方式，最大限度利用CPU资源，分析几千个文件只需要5秒左右
 
 ![](https://github-1302945528.cos.ap-chengdu.myqcloud.com/repPic/urlExtractor/1.png)
 
 程序使用正则匹配的方式，可以扫描出`http、https、ftp`三中协议开头的链接并输出到文件。
 
-### Usage:
+## Install
+
+------
+
+使用git下载
+
+```
+git clone https://github.com/Cr4y0nXX/urlExtractor.git
+```
+
+## Usage
+
+------
 
 ```
 python urlExtractor.py -f D:\phpstudy
