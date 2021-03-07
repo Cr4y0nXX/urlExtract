@@ -8,17 +8,9 @@ URL提取器，使用多进程的方式对目标路径下所有文件进行所�
 
 ![](https://github-1302945528.cos.ap-chengdu.myqcloud.com/repPic/urlExtractor/1.png)
 
-程序使用正则匹配的方式，可以扫描出`http、https、ftp`三中协议开头的链接并输出到文件
+程序使用正则匹配的方式，可以扫描出`http、https、ftp`三中协议开头的链接并输出到文件。
 
-![](https://github-1302945528.cos.ap-chengdu.myqcloud.com/repPic/urlExtractor/2.png)
-
-当然您也可以直接改代码中的正则或re模块的匹配方式，将该工具变为一个任意字符的匹配工具，如果还能加入参数或配置文件，那就太棒了。
-
-我这次仅想写一个提取URL的需求实现，是为了在做溯源审计时更加方便。
-
-### 使用
-
-Usage:
+### Usage:
 
 ```
 python urlExtractor.py -f D:\phpstudy
@@ -58,3 +50,6 @@ optional arguments:
                         Include the keyword(Separate with ',': A,B,C,...)
 ```
 
+当然您也可以直接改代码中的正则或re模块的匹配方式，将该工具变为一个任意字符的匹配工具，如果还能加入参数或配置文件，那就太棒了。
+
+我这次仅想写一个提取URL的需求实现，是为了在做溯源审计时更加方便。
