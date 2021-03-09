@@ -24,7 +24,7 @@ class URLExtractor():
         # 文件、进程数、关键字
         parser = ArgumentParser(description="This is an url extract tool based on the  python3.7, created by Cr4y0n.")
         parser.add_argument("-f", "--file", required=True, help="Target file or package")
-        parser.add_argument("-p", "--process", required=False, type=int, default=cpu_count(), help=f"Number of processes, default is the most of your CP: {cpu_count()}")
+        parser.add_argument("-p", "--process", required=False, type=int, default=cpu_count(), help=f"Number of processes, default is the most of your PC: {cpu_count()}")
         parser.add_argument("-k", "--keyword", required=False, action="append", help="Include the keyword(Separate with ',': A,B,C,...)")
         return parser.parse_args()
 
