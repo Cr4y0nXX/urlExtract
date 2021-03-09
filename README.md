@@ -55,7 +55,7 @@ optional arguments:
   -h, --help            show this help message and exit
   -f FILE, --file FILE  Target file or package
   -p PROCESS, --process PROCESS
-                        Number of processes, default is the most of your CP: 8
+                        Number of processes, default is the most of your PC: 8
   -k KEYWORD, --keyword KEYWORD
                         Include the keyword(Separate with ',': A,B,C,...)
 ```
