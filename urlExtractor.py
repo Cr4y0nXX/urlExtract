@@ -13,12 +13,27 @@ from multiprocessing import Pool, Manager, cpu_count
 
 class URLExtractor():
     def __init__(self):
+        self.banner()
         self.args = self.parseArgs()
         self.differentURLList = []  # 所有URL去重后的列表
         self.fileList = Manager().list()    # 扫描到的所有文件
         self.allURLList = Manager().list()  # 扫描到的所有url
         self.urlWithFileList = Manager().list() # 所有url及其所在文件
         self.multiRun()
+
+    def banner(self):
+        logo = r"""
+             _ ______      _                  _
+            | |  ____|    | |                | |
+  _   _ _ __| | |__  __  _| |_ _ __ __ _  ___| |_ ___  _ __
+ | | | | '__| |  __| \ \/ / __| '__/ _` |/ __| __/ _ \| '__|
+ | |_| | |  | | |____ >  <| |_| | | (_| | (__| || (_) | |
+  \__,_|_|  |_|______/_/\_\\__|_|  \__,_|\___|\__\___/|_|
+
+            Author: Cr4y0n
+            Version: V1.0
+        """
+        print("\033[31m" + logo + "\033[0m")
 
     def parseArgs(self):
         # 文件、进程数、关键字
